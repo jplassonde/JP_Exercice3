@@ -2,9 +2,7 @@
 ; Exercise 3: Digital Communication
 ; File: tc74.asm
 ; =====================================
-; Description: 
-;
-;
+; Description: get data from TC74 and store it in a character buffer.
 ;
 ; Author: Jean-Philippe Lassonde #1504236
 ; Date: April 11th 2018
@@ -30,7 +28,6 @@ area text(rom,rel)
 STR_FORMAT:
 asciz "%d"
 .ENDLITERAL
-
 
 GetTC74::
 .wait_data_ready:
@@ -69,8 +66,6 @@ GetTC74::
 	add SP, 0xFA	; Pop args off the stack
 	
 	ret 			; Done
-	
-	
 
 ; Register to read in A
 .write_i2c:

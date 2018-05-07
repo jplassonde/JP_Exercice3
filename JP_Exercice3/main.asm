@@ -2,9 +2,8 @@
 ; Exercise 3: Digital Communication
 ; File: main.asm
 ; =====================================
-; Description: 
-;
-;
+; Description: Get data from 3 sensors, print it to LCD and 
+; send it in a JSON string over UART. 
 ;
 ; Author: Jean-Philippe Lassonde #1504236
 ; Date: April 11th 2018
@@ -87,51 +86,51 @@ _main:
 row_index: equ pointer ; Use the same RAM loc as pointer for the row index
 
 PrintToLCD:
-	mov [row_index], 0 
+	mov [row_index], 0 	; init the row index to 0
 .clear_lcd:	
-	mov A, [row_index]
+	mov A, [row_index]	; load the row index in A (0 or 1)
 	mov X, 0
-	lcall LCD_Position
-	mov X, 16
+	lcall LCD_Position	; Set LCD position
+	mov X, 16			; Init X to 16, to clear 16 spaces
 .clear_line:
 	push X
-	mov A, ' '
-	lcall LCD_WriteData
+	mov A, ' '			
+	lcall LCD_WriteData	; Print a space on the LCD 
 	pop X
-	dec X
-	jnz .clear_line
-	inc [row_index]
-	cmp [row_index], 1
+	dec X				; Decrement counter in X
+	jnz .clear_line		; Do until X = 0 (16 times)
+	inc [row_index]		; Increment row index
+	cmp [row_index], 1	; Clear the second row, or continue
 	jz .clear_lcd
 
 	mov A, 0
 	mov X, 0
-	lcall LCD_Position
+	lcall LCD_Position	; Set LCD position to 1st column of 1st row
 	
 	mov A, >DS_STR
 	mov X, <DS_STR
-	lcall LCD_PrCString	
+	lcall LCD_PrCString	; Print DS ROM string
 	mov A, 0
 	mov X, ds1822Val
-	lcall LCD_PrString
+	lcall LCD_PrString	; Print DS Value
 	
 	mov A, 1
 	mov X, 0
-	lcall LCD_Position
+	lcall LCD_Position	; Set LCD to 1st column of second row
 	
 	mov A, >LM_STR
 	mov X, <LM_STR
-	lcall LCD_PrCString
+	lcall LCD_PrCString	; Print LM ROM string
 	mov A, 0
 	mov X, lm35Val
-	lcall LCD_PrString
+	lcall LCD_PrString	; Print LM value
 	
 	mov A, >TC_STR
 	mov X, <TC_STR
-	lcall LCD_PrCString
+	lcall LCD_PrCString	; Print TC ROM string
 	mov A, 0
 	mov X, tc74Val
-	lcall LCD_PrString
+	lcall LCD_PrString	; Print TC value
 	ret
 	
 ;-----------------------------------------------------------------------------

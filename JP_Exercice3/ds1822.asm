@@ -2,9 +2,8 @@
 ; Exercise 3: Digital Communication
 ; File: ds1822.asm
 ; =====================================
-; Description: 
-;
-;
+; Description: Read data fom DS1822, convert and store it with 
+; 2 decimals in a character buffer.
 ;
 ; Author: Jean-Philippe Lassonde #1504236
 ; Date: April 11th 2018
