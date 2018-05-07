@@ -1,0 +1,19 @@
+XH
+H 2 areas 1 global symbols
+M onewire_dsint.asm
+A text size 0 flags 0
+dbfile lib/onewire_dsint.asm
+dbfunc 0 ? 0 I
+dbfile ./lib/OneWire_DS.inc
+dbfunc 0 ? 0 I
+dbfile lib/onewire_dsint.asm
+dbfunc 0 ? 0 I
+dbfile C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc
+dbfunc 0 ? 0 I
+A UserModules size 1 flags 0
+dbfile lib/onewire_dsint.asm
+dbfunc 0 ? 0 I
+dbline 26 0
+S _OneWire_DS_ISR Def0000
+T 00 00 7E
+R 00 00 00 01

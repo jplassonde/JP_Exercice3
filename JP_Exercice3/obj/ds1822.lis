@@ -1,0 +1,174 @@
+ 0000           ;----------------------------------------------------------------------------
+ 0000           ; Exercise 3: Digital Communication
+ 0000           ; File: ds1822.asm
+ 0000           ; =====================================
+ 0000           ; Description: 
+ 0000           ;
+ 0000           ;
+ 0000           ;
+ 0000           ; Author: Jean-Philippe Lassonde #1504236
+ 0000           ; Date: April 11th 2018
+ 0000           ; Course: TX00CS03 - Sensors and Interfaces 
+ 0000           ;----------------------------------------------------------------------------
+ 0000           
+ 0000           ; DS1822 Commands
+ 00CC           DS_SKIP_ROM:	equ 0xCC
+ 0044           DS_CONVERT_T: 	equ 0x44
+ 00BE           DS_READ_SPAD: 	equ 0xBE
+ 004E           DS_WRITE_SPAD: 	equ 0x4E
+ 0048           DS_COPY_SPAD:	equ 0x48
+ 0000           
+                export ds1822Val
+                
+                area bss(ram,rel)
+ 0000           ds1822Val:      blk 9
+                area text(rom,rel)
+                
+                
+                ;-----------------------------------------------------------------------------
+                ;  FUNCTION NAME: GetDS1822
+                ;
+                ;  DESCRIPTION: - Get the value from the DS1822 sensor
+                ;                               - Store it into a single-precision float
+                ;                               - Convert the value to string and store it with 2 decimals in
+                ;                                 the ds1822Val buffer
+                ;
+                ;-----------------------------------------------------------------------------
+                ;  ARGUMENTS: none
+                ;  RETURNS: none
+                ;-----------------------------------------------------------------------------
+                
+                ;       Stack:  X+9:    Counter
+                ;                       X:              9 bytes RX buffer
+                ;
+ 0000           GetDS1822::
+ 0000 4F                mov X, SP               ; Allocate 10 bytes on the stack
+ 0001 380A              add SP, 0x0A    ; X+9: Counter
+ 0003 10                push X                  ; X:   9 bytes RX buffer
+ 0004                   
+ 0004           ;-------------- Request Transfer ----------------------------
+ 0004           .init_conversion:
+ 0004 7C0000            lcall OneWire_DS_fReset         ; Send Reset signal
+ 0007 50CC              mov A, DS_SKIP_ROM                      ; Signal to skip ROM
+ 0009 7C0000            lcall OneWire_DS_WriteByte
+ 000C 5044              mov A, DS_CONVERT_T                     ; Ask for temperature conversion
+ 000E 7C0000            lcall OneWire_DS_WriteByte
+ 0011                   
+ 0011           .poll_status:
+ 0011 7C0000            lcall OneWire_DS_bReadBit       ; Poll the status bit
+ 0014 67                asr A                                           ; Shift status bit to carry
+ 0015 DFFB              jnc .poll_status                        ; Poll until status bit is set
+ 0017                   
+ 0017           ;-------------- Receive Data --------------------------------
+ 0017           
+ 0017 7C0000            lcall OneWire_DS_ClearCRC8      ; Clear CRC buffer
+ 001A 7C0000            lcall OneWire_DS_fReset         ; Send Reset signal
+ 001D 50CC              mov A, DS_SKIP_ROM                      ; Signal to skip ROM
+ 001F 7C0000            lcall OneWire_DS_WriteByte      
+ 0022 50BE              mov A, DS_READ_SPAD                     ; Read DS 1822 Scratchpad
+ 0024 7C0000            lcall OneWire_DS_WriteByte
+ 0027 20                pop X
+ 0028 5A00              mov [pointer], X                ; Load buffer address in pointer
+ 002A 560908            mov [X+9], 8                    ; Initialize counter to get 8 values
+ 002D 10                push X
+ 002E                   
+ 002E           .get_byte:
+ 002E 7C0000            lcall OneWire_DS_bReadByte      ; Read one byte from OneWire
+ 0031 3F00              mvi [pointer], A                        ; Store it on the stack & increment pointer
+ 0033 7C0000            lcall OneWire_DS_bCRC8          ; Compute CRC
+ 0036 20                pop X
+ 0037 7B09              dec [X+9]                                       ; Decrement counter
+ 0039 10                push X
+ 003A BFF3              jnz .get_byte                           ; Repeat until counter is 0
+ 003C           
+ 003C           ;-------------- Get & calculate CRC -------------------------
+ 003C 7C0000            lcall OneWire_DS_bReadByte      ; Get 9th byte (CRC)
+ 003F 7C0000            lcall OneWire_DS_bCRC8
+ 0042 3900              cmp A, 0                                        ; Check if CRC passed (ZF Set)
+ 0044 BFBF              jnz .init_conversion            ; Otherwise get data again
+ 0046                   
+ 0046           ;-------------- Convert to float ( The fun part!) -----------
+ 0046           ;       Stack:  X+6:    Counter
+ 0046           ;                       X+2:    4 bytes floating point
+ 0046           ;                       X:              2 bytes sensor data
+ 0046                   
+ 0001           	MSB: equ 1 ; MSB(yte) pos in relation to frame pointer
+ 0000           	LSB: equ 0
+ 0046           
+ 0046 20                pop X                   ; Restore frame pointer
+ 0047                   
+ 0047 38FD              add SP, 0xFD    ; Remove 3 unused bytes from the stack
+ 0049 560200            mov [X+2], 0    ; Clear memory used by the float 
+ 004C 560300            mov [X+3], 0
+ 004F 560400            mov [X+4], 0
+ 0052 560500            mov [X+5], 0
+ 0055 560600            mov [X+6], 0            ; Init counter to 0
+ 0058 480180            tst [X+MSB], 0x80       ; Check one of the sign bit 
+ 005B A013              jz .compute_float       
+ 005D                   
+ 005D           ;---- Adjust negative temperature ---
+ 005D 560280            mov [X+2], 0x80         ; Set sign on float
+ 0060 3700FF            xor [X+LSB], 0xFF       ; Flip 2s complement bits 
+ 0063 3701FF            xor [X+MSB], 0xFF
+ 0066 070001            add [X+LSB], 0x01       ; Add 1, now contain the absolute value
+ 0069 0F0100            adc [X+MSB], 0
+ 006C 270107            and [X+MSB], 0x07       ; Mask out sign bits
+ 006F                           
+ 006F           ;-------------- Set float exponent and mantissa -------------
+ 006F           .compute_float:
+ 006F 70FB              and F, 0xFB                     ; Clear carry
+ 0071 6F01              rrc [X+MSB]                     ; Rotate sensor bits right
+ 0073 6F00              rrc [X+LSB]
+ 0075 6D                rrc A                           ; All the way to mantissa
+ 0076 7706              inc [X+6]                       ; Count number of shift
+ 0078 3D0100            cmp [X+MSB], 0          ; Until all the set bits have been shifted
+ 007B BFF3              jnz .compute_float
+ 007D 3D0001            cmp [X+LSB], 1          ; Except for the last one. Implicit mantissa bit                
+ 0080 BFEE              jnz .compute_float
+ 0082 07067B            add [X+6], 123          ; add 123 to the counter to get exponent value (127 - 5 shift to 2e0 + 1 implicit bit not counted)
+ 0085                   
+ 0085           ; Mantissa (8 most significant bits) in A, exponent in X+6. 
+ 0085           ; Few RORs and ORs and everything is set in position
+ 0085           
+ 0085 70FB              and F, 0xFB                     ; Clear carry
+ 0087 6D                rrc A                           ; Rotate lsb of mantissa
+ 0088 6F04              rrc [X+4]                       ; In the msb of the 3rd byte of float
+ 008A 70FB              and F, 0xFB                     ; Clear carry
+ 008C 6F06              rrc [X+6]                       ; Rotate exponent lsb in 2nd byte of the float
+ 008E 6F03              rrc [X+3]
+ 0090 2D03              or [X+3], A                     ; OR mantissa with the exponent lsb
+ 0092 5206              mov A, [X+6]
+ 0094 2D02              or [X+2], A                     ; OR exponent with the sign bit 
+ 0096                   
+ 0096 38FF              add SP, 0xFF            ; Remove counter/exponent from the stack
+ 0098                   
+ 0098           ;-------------- Convert to char array -----------------------   
+ 0098                   
+ 0098 560000            mov [X], 0                      ; Set ftoa status pointer                       
+ 009B 560100            mov [X+1], pointer      ; The pointer becomes the pointee
+ 009E                   
+ 009E 7C0000            lcall _ftoa                     ; Call ftoa. Buffer pointer located in [__r1], status in ram[pointer]
+ 00A1 38FA              add SP, 0xFA            ; pop the rest of the stack 
+ 00A3                   
+ 00A3 3C0100            cmp [pointer+1], 0              ; Check if returned value is 0
+ 00A6 B00E              jnz .invalid_conversion ; Handle invalid cases
+ 00A8                   
+ 00A8           ;------- Copy it with 2 decimal at final destination --------
+ 00A8           
+ 00A8 550000            mov [pointer], ds1822Val        ; Pointer to the final ds1822Val
+ 00AB 5100              mov A, [__r1]                           ; Copy the _ftoa buffer pointer
+ 00AD 5301              mov [pointer+1], A                      
+ 00AF 5702              mov X, 2                                        ; Set number of decimals to 2
+ 00B1 7C0000            lcall StrCpy
+ 00B4           
+ 00B4 7F                ret                                                     ; Return to main
+ 00B5                   
+ 00B5           ;------------- HANDLE INVALID CONVERSION ----------------
+ 00B5           ; FtoA should never fail with this range and precision, but 
+ 00B5           ; if by some sorcery the value get dangerously close to 0...
+ 00B5           .invalid_conversion:
+ 00B5 550030            mov [ds1822Val], '0'    ; Set temperature string to "0" if anything goes wrong with ftoa
+ 00B8 550100            mov [ds1822Val+1], 0    ; Null terminate
+ 00BB 7F                ret
+ 00BC           
+ 00BC                   

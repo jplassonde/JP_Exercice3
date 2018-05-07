@@ -1,0 +1,42 @@
+Starting MAKE...
+creating project.mk 
+
+lib/i2cm.asm
+
+lib/lcd.asm
+
+lib/onewire_ds.asm
+
+lib/onewire_dsint.asm
+
+lib/psocconfig.asm
+
+lib/psocconfigtbl.asm
+
+lib/sleeptimer.asm
+
+lib/sleeptimerint.asm
+
+lib/spim.asm
+
+lib/spimint.asm
+
+lib/uart.asm
+
+lib/uartint.asm
+
+lib/uartplus.asm
+
+./boot.asm
+
+Linking..
+
+  ROM 88% full. 14416 out of 16384 bytes used (does not include absolute areas).
+
+  RAM 46% full. 117 bytes used (does not include stack usage).
+
+Built with ICCM8C STD V7.05.00
+
+ 
+JP_Exercice3 - 0 error(s) 0 warning(s) 07:29:56
+

@@ -1,0 +1,55 @@
+# DO NOT DELETE
+./obj/boot.o : \
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8ssc.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\lib\GLOBAL~1.INC\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./obj/ds1822.o : 
+./obj/lm35dz.o :  ./lib/I2CM.inc ./lib/LCD.inc ./lib/ONEWIR~1.INC\
+   ./lib/PSoCAPI.inc ./lib/PSOCGP~1.INC ./lib/SPIM.inc\
+   ./lib/SLEEPT~1.INC ./lib/UART.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc
+./obj/main.o :  ./lib/I2CM.inc ./lib/LCD.inc ./lib/ONEWIR~1.INC\
+   ./lib/PSoCAPI.inc ./lib/PSOCGP~1.INC ./lib/SPIM.inc\
+   ./lib/SLEEPT~1.INC ./lib/UART.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./obj/tc74.o :  ./lib/I2CM.inc ./lib/LCD.inc ./lib/ONEWIR~1.INC\
+   ./lib/PSoCAPI.inc ./lib/PSOCGP~1.INC ./lib/SPIM.inc\
+   ./lib/SLEEPT~1.INC ./lib/UART.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc
+./lib/obj/i2cm.o :  ./lib/I2CM.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/lcd.o :  ./lib/LCD.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/onewire_ds.o :  ./lib/ONEWIR~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/onewire_dsint.o :  ./lib/ONEWIR~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc
+./lib/obj/psocconfig.o :  ./lib/GLOBAL~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/psocconfigtbl.o : \
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc
+./lib/obj/sleeptimer.o :  ./lib/SLEEPT~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/sleeptimerint.o :  ./lib/SLEEPT~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/spim.o :  ./lib/SPIM.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/spimint.o :  ./lib/SPIM.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/uart.o :  ./lib/UART.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/uartint.o :  ./lib/UART.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C27~1/m8c.inc\
+   C:\Users\kaldg\DOCUME~1\PSOCDE~1.4PR\JP_EXE~1\JP_EXE~1\memory.inc
+./lib/obj/uartplus.o : 
